@@ -25,10 +25,9 @@ class MyCallbackStopTraining(tf.keras.callbacks.Callback):
             if logs.get(self.metric) > self.target:
                 print('\n stop training reached {} {}'.format(self.target, self.metric))
                 self.model.stop_training = True
-        else:
-            if logs.get(self.metric) < self.target:
-                print('\n stop training reached {} {}'.format(self.target, self.metric))
-                self.model.stop_training = True
+        elif logs.get(self.metric) < self.target:
+            print('\n stop training reached {} {}'.format(self.target, self.metric))
+            self.model.stop_training = True
 
 
 def model_checkpoint_callback(checkpoint_filepath, monitor, mode):

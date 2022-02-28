@@ -96,8 +96,8 @@ def main():
         results = defaultdict(dict)
         for km, vm in MODELS.items():
             for ko, vo in OPTIMIZERS.items():
-                key = km + '_' + ko + '_' + str(int(time()))
-                results[key]['setting'] = 'model=' + km + ', opt=' + ko
+                key = f'{km}_{ko}_{int(time())}'
+                results[key]['setting'] = f'model={km}, opt={ko}'
                 print('\n ********** run_' + results[key]['setting'] + ' **********')
                 start = time()
                 results[key]['model'], results[key]['history'] = train_model(train_sequences, train_labels, test_data,
@@ -119,9 +119,9 @@ def main():
         print('\n')
 
         # (4) save best model:
-        acc_ = {k: results[k]['acc'] for k in results.keys()}
+        acc_ = {k: results[k]['acc'] for k in results}
         model_name = [k for k, v in acc_.items() if v == max(acc_.values())][0]
-        results[model_name]['model'].save('saved_models/' + model_name)
+        results[model_name]['model'].save(f'saved_models/{model_name}')
         print('\n')
         print('********** saved: {} ********** '.format(model_name))
 

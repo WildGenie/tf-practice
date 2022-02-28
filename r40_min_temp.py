@@ -14,7 +14,7 @@ TRAIN_SPLIT = .75
 N_EPOCHS = 2
 WINDOW_SIZE = 10
 MODEL = 'cnn'
-MODEL_NAME = MODEL + '_' + str(int(time()))
+MODEL_NAME = f'{MODEL}_{int(time())}'
 SAVE_MODEL = True
 PLOTS = True
 
@@ -57,12 +57,16 @@ def main():
     y_test = temps[split+WINDOW_SIZE:]
     mae = np.round(tf.keras.metrics.mae(y_test, y_pred).numpy(), 5)
     print('----------')
-    print('trained ' + MODEL + ' for ' + str(N_EPOCHS) + ' epochs in ' + str(training_time) + 'seconds')
-    print('testing mae=' + str(np.round(mae, 5)) + '\n')
+    print(
+        f'trained {MODEL} for {str(N_EPOCHS)} epochs in {str(training_time)}'
+        + 'seconds'
+    )
+
+    print(f'testing mae={str(np.round(mae, 5))}' + '\n')
 
     # save model
     if mae < TARGET_MAE_SAVE and SAVE_MODEL:
-        model.save('saved_models/' + MODEL_NAME)
+        model.save(f'saved_models/{MODEL_NAME}')
         print('saved model as {}'.format(MODEL_NAME))
 
     if PLOTS:
@@ -71,14 +75,14 @@ def main():
         plt.plot(history.epoch[plot_start:], history.history['loss'][plot_start:])
         plt.plot(history.epoch[plot_start:], history.history['val_loss'][plot_start:], color='orange')
         plt.title('training loss')
-        plt.savefig('results/' + MODEL_NAME + '_loss.png')
+        plt.savefig(f'results/{MODEL_NAME}_loss.png')
         print('saved plot: ' + 'results/' + MODEL_NAME + '_loss.png')
 
         # plot results
         plt.plot(dates_test, y_test)
         plt.plot(dates_test, y_pred, color='orange')
         plt.title('mean absolute error: {}'.format(mae))
-        plt.savefig('results/' + MODEL_NAME + '_results.png')
+        plt.savefig(f'results/{MODEL_NAME}_results.png')
         print('saved plot: ' + 'results/' + MODEL_NAME + '_results.png')
     print('----------')
 

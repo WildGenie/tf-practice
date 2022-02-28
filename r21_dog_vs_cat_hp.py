@@ -54,8 +54,8 @@ def main():
     results = defaultdict(dict)
     for km, vm in MODELS.items():
         for ka, va in AUGMENTATIONS.items():
-            key = km + '_' + ka + '_' + str(int(time()))
-            results[key]['setting'] = 'model=' + km + ', aug=' + ka
+            key = f'{km}_{ka}_{int(time())}'
+            results[key]['setting'] = f'model={km}, aug={ka}'
             train_data_gen, test_data_gen = get_data(va)
             opt = tf.keras.optimizers.Adam(lr=1.0e-3)
             start = time()
@@ -77,9 +77,9 @@ def main():
     print('\n')
 
     # (4) save best model:
-    acc_ = {k: results[k]['acc'] for k in results.keys()}
+    acc_ = {k: results[k]['acc'] for k in results}
     model_name = [k for k, v in acc_.items() if v == max(acc_.values())][0]
-    results[model_name]['model'].save('saved_models/' + model_name)
+    results[model_name]['model'].save(f'saved_models/{model_name}')
     print('\n')
     print('********** saved: {} ********** '.format(model_name))
 
