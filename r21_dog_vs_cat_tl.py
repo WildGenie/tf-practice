@@ -10,7 +10,7 @@ from tfutils import MyCallbackStopTraining
 
 N_EPOCHS = 10
 MODEL = 'cnn_tl'
-MODEL_NAME = MODEL + '_' + str(int(time()))
+MODEL_NAME = f'{MODEL}_{int(time())}'
 SAVE_MODEL = True
 PLOTS = True
 
@@ -56,19 +56,23 @@ def main():
     # (4) predict on test data:
     loss, acc = model.evaluate(test_data_gen)
     print('----------')
-    print('trained ' + MODEL + ' for ' + str(N_EPOCHS) + ' epochs in ' + str(training_time) + 'seconds')
-    print('testing acc=' + str(np.round(acc, 5)) + '\n')
+    print(
+        f'trained {MODEL} for {str(N_EPOCHS)} epochs in {str(training_time)}'
+        + 'seconds'
+    )
+
+    print(f'testing acc={str(np.round(acc, 5))}' + '\n')
 
     # (5) save model, plots:
     if acc > TARGET_ACC_SAVE and SAVE_MODEL:
-        model.save('saved_models/' + MODEL_NAME)
+        model.save(f'saved_models/{MODEL_NAME}')
         print('saved model as {}'.format(MODEL_NAME))
 
     if PLOTS:
         plt.plot(history.epoch, history.history['loss'])
         plt.plot(history.epoch, history.history['val_loss'], color='orange')
         plt.title('training loss')
-        plt.savefig('results/' + MODEL_NAME + '_loss_dvc.png')
+        plt.savefig(f'results/{MODEL_NAME}_loss_dvc.png')
         print('saved plot: ' + 'results/' + MODEL_NAME + '_loss_dvc.png')
     print('----------')
 

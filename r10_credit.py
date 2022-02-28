@@ -15,7 +15,7 @@ from tfutils import model_checkpoint_callback
 TRAIN_SPLIT = .75
 N_EPOCHS = 7
 MODEL = 'dnn'
-MODEL_NAME = MODEL + '_' + str(int(time()))
+MODEL_NAME = f'{MODEL}_{int(time())}'
 SAVE_MODEL = True
 PLOTS = True
 
@@ -52,20 +52,24 @@ def main():
     f1 = f1_score(y_test, y_pred)
 
     print('----------')
-    print('trained ' + MODEL + ' for ' + str(N_EPOCHS) + ' epochs in ' + str(training_time) + 'seconds')
-    print('testing f1-score=' + str(np.round(f1, 5)) + '\n')
-    print('testing loss=' + str(np.round(loss, 6)) + '\n')
+    print(
+        f'trained {MODEL} for {str(N_EPOCHS)} epochs in {str(training_time)}'
+        + 'seconds'
+    )
+
+    print(f'testing f1-score={str(np.round(f1, 5))}' + '\n')
+    print(f'testing loss={str(np.round(loss, 6))}' + '\n')
 
     # save model
     if f1 > TARGET_F1_SAVE and SAVE_MODEL:
-        model.save('saved_models/' + MODEL_NAME)
+        model.save(f'saved_models/{MODEL_NAME}')
         print('saved model as {}'.format(MODEL_NAME))
 
     if PLOTS:
         plt.plot(history.epoch, history.history['loss'])
         plt.plot(history.epoch, history.history['val_loss'], color='orange')
         plt.title('training loss')
-        plt.savefig('results/' + MODEL_NAME + '_loss.png')
+        plt.savefig(f'results/{MODEL_NAME}_loss.png')
         print('saved plot: ' + 'results/' + MODEL_NAME + '_loss.png')
     print('----------')
 

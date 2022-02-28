@@ -20,31 +20,32 @@ MAX_LEN_EMAIL = 30
 
 
 def ds_to_texts(ds, n_emails):
-    sentences = []
-    for i, email in enumerate(ds):
-        if i >= n_emails:
-            continue
-        sentences.append(email['email_body'].numpy().decode('utf-8'))
-    return sentences
+    return [
+        email['email_body'].numpy().decode('utf-8')
+        for i, email in enumerate(ds)
+        if i < n_emails
+    ]
 
 
 def get_input_sequences(sentences, tokenizer):
     seq = tokenizer.texts_to_sequences(sentences)
     input_sequences = []
     for seq in seq:
-        for i in range(1, min(len(seq)+1, MAX_LEN_EMAIL) - 1):
-            input_sequences.append(seq[:i+1])
+        input_sequences.extend(
+            seq[: i + 1]
+            for i in range(1, min(len(seq) + 1, MAX_LEN_EMAIL) - 1)
+        )
+
     seq = np.array(pad_sequences(input_sequences, maxlen=MAX_LEN, padding='pre', truncating='pre'))
     return seq[:, :-1], seq[:, -1]
 
 
 def generate_text(text, tokenizer, model):
-    for i in range(30):
+    for _ in range(30):
         input_ = pad_sequences(tokenizer.texts_to_sequences([text]), maxlen=MAX_LEN, padding='pre', truncating='pre')
         prediction = model.predict(input_)[0]
         token = np.random.choice(len(prediction), p=prediction)
         text.append(tokenizer.sequences_to_texts([[token]])[0])
-        # text.append(tokenizer.sequences_to_texts([np.argmax(model.predict(input_), axis=-1)])[0])
     print(' '.join(text))
 
 
